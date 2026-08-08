@@ -37,6 +37,13 @@ body::after {
   pointer-events: none;
 }
 
+/* PAGE ROOT — swappable content region for SPA-style navigation.
+   Starts hidden (opacity) rather than display:none so it works
+   identically whether the page's unique content is a flex hero
+   or a block content column. */
+#page-root { opacity: 0; transition: opacity 0.25s ease; }
+#page-root.show { opacity: 1; }
+
 /* CANVAS */
 #ocean-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 

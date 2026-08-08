@@ -200,9 +200,9 @@
    would otherwise block on every image/font finishing download and
    make the loader's visible duration unpredictable. */
 (function () {
-  const loader  = document.getElementById('loader');
-  const content = document.getElementById('content');
-  const btn     = document.getElementById('audio-btn');
+  const loader   = document.getElementById('loader');
+  const pageRoot = document.getElementById('page-root');
+  const btn      = document.getElementById('audio-btn');
 
   if (loader) {
     document.body.classList.add('loading');
@@ -210,8 +210,10 @@
     setTimeout(() => {
       loader.style.display = 'none';
       document.body.classList.remove('loading');
-      if (content) { content.style.display = 'block'; content.classList.add('show'); }
+      if (pageRoot) pageRoot.classList.add('show');
     }, 2800);
+  } else if (pageRoot) {
+    pageRoot.classList.add('show');
   }
 
   /* ── TRACK LIST ──
@@ -385,6 +387,102 @@
       overlay.classList.add('open');
     });
   })();
+})();
+
+/* ── SPA-STYLE NAVIGATION ──
+   Every page load destroys the JS context (and with it, the <audio>
+   element), which is why music used to stop/restart on every click.
+   This intercepts clicks on internal site links, fetches the target
+   page in the background, and swaps in just its #page-root content
+   and page-specific <style id="page-style"> block — leaving the nav,
+   canvas, audio element, and playlist modal untouched and running
+   continuously. A real page load never happens after the first one. */
+(function setupRouter() {
+  const SITE_PAGES = ['index.html', 'vh-about.html', 'vh-gilded.html', 'vh-tidal-court.html', 'vh-connect.html'];
+
+  function pageNameFromUrl(url) {
+    const path = url.split('#')[0].split('?')[0];
+    const name = path.split('/').pop();
+    return name === '' ? 'index.html' : name;
+  }
+
+  function isInternalPageLink(a) {
+    if (!a || !a.getAttribute) return false;
+    const href = a.getAttribute('href');
+    if (!href) return false;
+    if (a.target === '_blank' || a.hasAttribute('download')) return false;
+    if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
+    let url;
+    try { url = new URL(href, window.location.href); } catch (e) { return false; }
+    if (url.origin !== window.location.origin) return false;
+    return SITE_PAGES.includes(pageNameFromUrl(url.pathname));
+  }
+
+  function updateActiveNav(pageName) {
+    document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+      const href = a.getAttribute('href');
+      a.classList.toggle('active', href === pageName);
+    });
+  }
+
+  function closeMobileMenu() {
+    const m = document.getElementById('mobileMenu');
+    if (m) m.classList.remove('open');
+  }
+
+  let navigating = false;
+  function navigateTo(url, push) {
+    if (navigating) return;
+    navigating = true;
+
+    fetch(url).then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    }).then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newRoot = doc.getElementById('page-root');
+      const newStyle = doc.getElementById('page-style');
+      const newTitle = doc.querySelector('title');
+      if (!newRoot) throw new Error('no #page-root in fetched page');
+
+      const pageRoot = document.getElementById('page-root');
+      const pageStyle = document.getElementById('page-style');
+
+      closeMobileMenu();
+      pageRoot.classList.remove('show');
+
+      setTimeout(() => {
+        pageRoot.innerHTML = newRoot.innerHTML;
+        if (pageStyle && newStyle) pageStyle.textContent = newStyle.textContent;
+        if (newTitle) document.title = newTitle.textContent;
+        updateActiveNav(pageNameFromUrl(url));
+        window.scrollTo(0, 0);
+        // Force a reflow so the opacity transition actually replays.
+        void pageRoot.offsetWidth;
+        pageRoot.classList.add('show');
+
+        if (push) history.pushState({ vh: true }, '', url);
+        navigating = false;
+      }, 260);
+    }).catch(err => {
+      console.error('[Velvet Haven] SPA navigation failed, falling back to full load:', err);
+      window.location.href = url;
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a');
+    if (!isInternalPageLink(a)) return;
+    e.preventDefault();
+    const url = new URL(a.getAttribute('href'), window.location.href).href;
+    if (pageNameFromUrl(url) === pageNameFromUrl(window.location.pathname) ) return; // already here
+    navigateTo(url, true);
+  });
+
+  window.addEventListener('popstate', () => {
+    navigateTo(window.location.href, false);
+  });
 })();
 
 function toggleMenu() {

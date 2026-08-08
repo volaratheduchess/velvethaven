@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vh-shared.css">
-  <style>
+  <style id="page-style">
     .discord-hero { background: var(--panel); border: 1px solid var(--panel-b); border-top: 3px solid var(--gold); border-radius: 3px; padding: 42px 38px; text-align: center; margin-bottom: 34px; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
     .discord-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(26,122,138,0.05) 0%, transparent 70%); pointer-events: none; }
     .discord-hero .big-icon { font-size: 2.8rem; margin-bottom: 12px; display: block; }
@@ -57,6 +57,7 @@
   <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
 </div>
 
+<main id="page-root">
 <div class="page-header">
   <div class="page-eyebrow">— find the harbour —</div>
   <h1>Connect</h1>
@@ -64,7 +65,7 @@
   <div class="vh-divider"><span>⚓</span></div>
 </div>
 
-<div class="page-wrap" id="content" style="display:none;">
+<div class="page-wrap">
 
   <div class="discord-hero">
     <span class="big-icon">💬</span>
@@ -78,27 +79,29 @@
   <div class="vh-card gold-left" style="margin-bottom:22px;">
     <div class="bot-section">
       <div class="bot-portrait-frame">
-          <img src="velvetcup.png" alt="Velvetcup">
+        <div class="bot-portrait-placeholder"><span>🧵</span><p>[ Velvetcup's portrait ]</p></div>
       </div>
       <div>
         <h2>Meet Velvetcup 🧵</h2>
-        <p>Sibling bot to Tidecup. The brewer of the harbour's tides. Steeping the seas.</p>
+        <p>Sibling bot to Tidecup. The brewer of the harbour's tides.</p>
       </div>
     </div>
   </div>
   <div class="vh-card gold-left" style="margin-bottom:22px;">
     <div class="bot-section">
       <div class="bot-portrait-frame">
-      <img src="tidecup.png" alt="Tidecup">
+        <div class="bot-portrait-placeholder"><span>🌊</span><p>[ Tidecup's portrait ]</p></div>
       </div>
       <div>
         <h2>Meet Tidecup 🌊</h2>
-        <p>Sibling bot to Velvetcup. Keeper of the Haven. Watcher of the shores. The cup that holds the sea. Born of deep water and velvet dark. TideCup tends the Haven so the Lightkeepers don't have to.</p>
+        <p>Sibling bot to Velvetcup. The brewer of the harbour's tides.</p>
       </div>
     </div>
   </div>
 
 </div>
+
+</main>
 
 <footer>
   <span class="footer-bubble">🫧</span>
