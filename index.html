@@ -894,18 +894,18 @@ footer {
      Add more soundtracks here — name is what shows in the modal,
      src is the mp3 filename (must sit alongside the other site files). */
   const TRACKS = [
-    { name: 'The Velvet Haven', src: 'The_Velvet_Haven.mp3' },
-    { name: 'A Remembering of Sky', src: 'A_Remembering_of_Sky.mp3' },
-    { name: 'Coral and Sand', src: 'Coral_and_Sand.mp3' },
-    { name: 'Sunlight Undersea', src: 'Sunlight_Undersea.mp3' },
-    { name: "The Captain's Lament", src: 'The_Captain_s_Lament.mp3' },
-    { name: 'The Copper Seamstress', src: 'The_Copper_Seamstress.mp3' },
-    { name: "The Sea's Eaving", src: 'The_Sea_s_Eaving.mp3' },
-    { name: "The Siren's Summons", src: 'The_Siren_s_Summons.mp3' },
-    { name: 'The Taeship', src: 'The_Taeship.mp3' },
-    { name: 'The Wreck', src: 'The_Wreck.mp3' },
+    { name: 'The Velvet Haven', src: 'The Velvet Haven.mp3' },
+    { name: 'A Remembering of Sky', src: 'A Remembering of Sky.mp3' },
+    { name: 'Coral and Sand', src: 'Coral and Sand.mp3' },
+    { name: 'Sunlight Undersea', src: 'Sunlight Undersea.mp3' },
+    { name: "The Captain's Lament", src: 'The Captain_s Lament.mp3' },
+    { name: 'The Copper Seamstress', src: 'The Copper Seamstress.mp3' },
+    { name: "The Sea's Eaving", src: "The Sea's Eaving.mp3" },
+    { name: "The Siren's Summons", src: "The Siren's Summons.mp3" },
+    { name: 'The Taeship', src: 'The Taeship.mp3' },
+    { name: 'The Wreck', src: 'The Wreck.mp3' },
     { name: 'Thunderous', src: 'Thunderous.mp3' },
-    { name: 'Underwater Waltzes', src: 'Underwater_Waltzes.mp3' },
+    { name: 'Underwater Waltzes', src: 'Underwater Waltzes.mp3' },
     { name: 'Vindictus', src: 'Vindictus.mp3' },
   ];
 
@@ -938,7 +938,7 @@ footer {
     const saveAudioState = () => {
       localStorage.setItem(AUDIO_TIME_KEY, String(window._vhAudio.currentTime));
       localStorage.setItem(AUDIO_PLAYING_KEY, window._vhAudio.paused ? '0' : '1');
-      localStorage.setItem(AUDIO_TRACK_KEY, window._vhAudio.src.split('/').pop());
+      localStorage.setItem(AUDIO_TRACK_KEY, decodeURIComponent(window._vhAudio.src.split('/').pop()));
     };
     setInterval(saveAudioState, 1000);
     window.addEventListener('pagehide', saveAudioState);
