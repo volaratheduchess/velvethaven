@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Tidal Court — The Velvet Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vh-shared.css">
+  <style>
+    .tc-lede { font-family: var(--f-it); font-style: italic; font-size: 1.05rem; color: var(--gold-lt); line-height: 1.85; margin-top: 8px; }
+    .tc-steps { list-style: none; padding: 0; margin: 16px 0 0; counter-reset: tc-step; display: flex; flex-direction: column; gap: 12px; }
+    .tc-steps li { counter-increment: tc-step; position: relative; padding: 12px 20px 12px 56px; background: linear-gradient(to right, rgba(26,122,138,0.07), rgba(4,17,31,0.4)); border-left: 2px solid rgba(58,181,197,0.3); border-radius: 0 2px 2px 0; font-family: var(--f-body); font-size: 1rem; color: var(--text-dim); line-height: 1.75; }
+    .tc-steps li::before { content: counter(tc-step); position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(58,181,197,0.4); display: flex; align-items: center; justify-content: center; font-family: var(--f-disp); font-size: 0.72rem; color: var(--teal-pale); }
+    .tc-checklist { list-style: none; padding: 0; margin: 14px 0; display: flex; flex-direction: column; gap: 8px; }
+    .tc-checklist li { font-family: var(--f-body); font-size: 0.98rem; color: var(--text-dim); line-height: 1.7; padding-left: 22px; position: relative; }
+    .tc-checklist li::before { content: '—'; position: absolute; left: 0; color: var(--teal-pale); }
+    .crit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 16px; }
+    .crit-item { background: linear-gradient(145deg, rgba(8,42,64,0.7), rgba(4,17,31,0.85)); border: 1px solid var(--panel-b); border-radius: 3px; padding: 18px 20px; }
+    .crit-icon { font-size: 1.15rem; margin-right: 6px; }
+    .crit-name { font-family: var(--f-disp); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--gold-lt); text-transform: uppercase; }
+    .crit-desc { font-family: var(--f-it); font-style: italic; font-size: 0.92rem; color: var(--text-mute); line-height: 1.7; margin-top: 8px; }
+    .tc-final { text-align: center; font-family: var(--f-disp); font-size: 0.62rem; letter-spacing: 0.3em; color: var(--text-mute); text-transform: uppercase; margin-top: 18px; opacity: 0.75; }
+    .mention { display: inline-flex; align-items: center; font-family: var(--f-body); font-weight: 600; font-size: 0.95em; padding: 1px 7px 2px; border-radius: 4px; background: rgba(88,101,242,0.18); color: #a7b0ff; }
+    .mention.channel { background: rgba(26,122,138,0.18); color: var(--teal-pale); }
+    .tc-closing { text-align: center; margin-top: 30px; }
+    .tc-closing p { font-family: var(--f-it); font-style: italic; font-size: 1.1rem; color: var(--gold-lt); }
+
+    /* RELIQUARY */
+    .reliquary-intro { text-align: center; max-width: 620px; margin: 0 auto; }
+    .reliquary-intro .ri-open { font-family: var(--f-it); font-style: italic; font-size: 1.2rem; color: var(--teal-pale); line-height: 1.9; }
+    .reliquary-rule { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 36px auto; max-width: 700px; }
+    .reliquary-rule::before, .reliquary-rule::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent); }
+    .reliquary-rule span { color: var(--gold); opacity: 0.7; }
+    .reliquary-year { font-family: var(--f-disp); font-size: 1.1rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 22px; }
+    .reliquary-plaque { background: var(--panel); border: 1px solid var(--panel-b); border-top: 3px solid var(--gold); border-radius: 3px; padding: 30px 34px; max-width: 640px; margin: 0 auto 22px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+    .reliquary-plaque::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 20%, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events: none; }
+    .rp-month { font-family: var(--f-disp); font-size: 0.72rem; letter-spacing: 0.35em; color: var(--gold-lt); text-transform: uppercase; margin-bottom: 4px; }
+    .rp-theme { font-family: var(--f-it); font-style: italic; font-size: 1.05rem; color: var(--text-mute); margin-bottom: 22px; }
+    .rp-rows { display: flex; flex-direction: column; gap: 10px; text-align: left; max-width: 380px; margin: 0 auto; }
+    .rp-row { display: flex; justify-content: space-between; gap: 16px; padding: 9px 16px; background: rgba(0,0,0,0.15); border-radius: 2px; border-left: 2px solid rgba(201,168,76,0.35); }
+    .rp-label { font-family: var(--f-disp); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-mute); text-transform: uppercase; align-self: center; }
+    .rp-value { font-family: var(--f-body); font-size: 1rem; color: var(--text-dim); }
+    .rp-value.tbd { color: var(--text-mute); font-style: italic; font-family: var(--f-it); }
+    .reliquary-note { text-align: center; font-family: var(--f-it); font-style: italic; font-size: 0.9rem; color: var(--text-mute); margin-top: 8px; }
+    @media (max-width: 768px) { .reliquary-plaque { padding: 24px 20px; } }
+  </style>
+</head>
+<body>
+<div id="loader"><div class="loader-bubble">🪸</div><div class="loader-text">convening the court</div><div class="loader-wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+<canvas id="ocean-canvas"></canvas>
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">⚓ The Velvet Haven</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="vh-about.html">About</a>
+    <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html" class="active">Tidal Court</a><a href="vh-connect.html">Connect</a>
+  </div>
+  <button class="nav-burger" onclick="toggleMenu()">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a><a href="vh-about.html">About</a>
+  <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+</div>
+
+<div class="page-header">
+  <div class="page-eyebrow">— everything you need to know —</div>
+  <h1>The Tidal Court</h1>
+  <p class="page-subtitle">A monthly creative rite. Build a bot, chase the theme, and see what rises.</p>
+  <div class="vh-divider"><span>🪸</span></div>
+</div>
+
+<div class="page-wrap" id="content" style="display:none;">
+
+  <div class="s-label">✦ What Is The Tidal Court?</div>
+  <div class="vh-card gold-left">
+    <p>Every month, the Anchorlights drop a theme. You build a bot. At the end of the month, we pick a favourite — and that creator earns the <strong>🪸 Crowned in Coral</strong> role and a permanent place in the Reliquary of Tides.</p>
+    <p>That's it. No pressure, no politics. Just a shared creative direction and a reason to build something new.</p>
+    <p class="tc-lede">Our hope is to help inspire you if you're stuck, or give you something new to explore if you're not. It's all for fun!</p>
+  </div>
+
+  <div class="s-label">✦ The Theme</div>
+  <div class="vh-card">
+    <p>Each month's theme is revealed on the 1st — no previews, no early access. <strong>Everyone starts at the same time.</strong></p>
+  </div>
+
+  <div class="s-label">✦ Eligibility</div>
+  <div class="vh-card">
+    <p>All members of Velvet Haven are welcome to enter. Anchorlights are not eligible for Crowned in Coral or Reliquary placement, to keep things fair for the community.</p>
+  </div>
+
+  <div class="s-label">✦ Submission Window</div>
+  <div class="vh-card">
+    <p>Entries must be posted between the <strong>1st and 28th</strong> of each month. Anything posted after the 28th will not be considered, regardless of when judging takes place.</p>
+  </div>
+
+  <div class="s-label gold-label">✦ How To Enter</div>
+  <div class="vh-card gold-left">
+    <p>Post your entry as its own post in the monthly theme forum. You're also welcome to share it in your Gilded Thread or in Bot-showcase — but your forum post is what counts as your official entry.</p>
+    <h3>Each post should include</h3>
+    <ol class="tc-steps">
+      <li>Bot name</li>
+      <li>Platform + working link</li>
+      <li>A short hook (2–3 sentences, no spoilers)</li>
+    </ol>
+    <h3>A few things to know</h3>
+    <ul class="tc-checklist">
+      <li>Your bot must be live and deployed on a platform (CrushOn.ai, TipsyChat, LinkinLove, Craveu.ai, Saucepan, or similar) with a working link.</li>
+      <li>You may submit multiple entries. Each one should be its own forum post.</li>
+      <li>Entries do not need to be exclusive to Velvet Haven. If you're running the same bot in another server's event or on another platform, that's completely fine.</li>
+    </ul>
+  </div>
+
+  <div class="s-label">✦ Judging</div>
+  <div class="vh-card">
+    <p>At the end of each month, the Anchorlights review all eligible entries and pick one favourite. We're looking for:</p>
+    <div class="crit-grid">
+      <div class="crit-item"><span class="crit-icon">🪸</span><span class="crit-name">Creativity</span><div class="crit-desc">Did you do something unexpected with the theme?</div></div>
+      <div class="crit-item"><span class="crit-icon">🪸</span><span class="crit-name">Uniqueness</span><div class="crit-desc">Does this feel like a bot only you could have made?</div></div>
+      <div class="crit-item"><span class="crit-icon">🪸</span><span class="crit-name">Interestingness</span><div class="crit-desc">Did it make us want to keep chatting?</div></div>
+      <div class="crit-item"><span class="crit-icon">🪸</span><span class="crit-name">Depth</span><div class="crit-desc">Is there real craft, lore, or character logic?</div></div>
+    </div>
+    <p style="margin-top:18px;">There is no voting, no reaction count, no algorithm. It's a human call. We'll always share a brief note on why the winning bot stood out so there's something to learn from each pick.</p>
+    <div class="tc-final">Anchorlight decisions are final</div>
+  </div>
+
+  <div class="s-label gold-label">✦ The Prize</div>
+  <div class="vh-card gold-left">
+    <p>The winning creator receives the <span class="mention">🪸 Crowned in Coral</span> role for the month and permanent placement in the Reliquary of Tides. The role moves to the new winner at the start of each month.</p>
+    <p>The Reliquary resets each January — the previous year's entries are archived, not deleted.</p>
+    <div class="vh-quote">
+      <p>Be a good sport. Congratulate your fellow creators.</p>
+    </div>
+    <p>Questions about the theme? Drop them in the thread below the pinned post in the monthly forum — we'll answer there so everyone can see. Questions or chattering in general? <span class="mention channel">#general-lounge</span> awaits! 🐦‍⬛</p>
+    <div class="tc-closing">
+      <p>Good luck. Go deep. 🌊🖤</p>
+    </div>
+  </div>
+
+  <!-- RELIQUARY OF TIDES -->
+  <div class="s-label gold-label" style="margin-top:56px;">✦ 🪸 The Reliquary of Tides</div>
+  <div class="vh-card gold-left" style="margin-bottom:8px;">
+    <div class="reliquary-intro">
+      <p class="ri-open">The ocean does not forget.<br>Neither do we.</p>
+      <p style="margin-top:14px;">This is the Reliquary — a permanent record of every creator who has risen to the surface and been Crowned in Coral. Each month, one name is added. Each year, the record is sealed and a new one begins.</p>
+      <p style="margin-top:10px;"><em>To be here is to have made something worth remembering.</em></p>
+    </div>
+  </div>
+
+  <div class="reliquary-rule"><span>━━━━━━━━━━━━━━━━━━━━━━</span></div>
+
+  <div class="reliquary-year">📖 2026</div>
+
+  <div class="reliquary-plaque">
+    <div class="rp-month">🪸 August</div>
+    <div class="rp-theme">The Abyss</div>
+    <div class="rp-rows">
+      <div class="rp-row"><span class="rp-label">Crowned in Coral</span><span class="rp-value tbd">—</span></div>
+      <div class="rp-row"><span class="rp-label">Bot</span><span class="rp-value tbd">—</span></div>
+      <div class="rp-row"><span class="rp-label">Links</span><span class="rp-value tbd">—</span></div>
+    </div>
+  </div>
+
+  <div class="reliquary-rule"><span>━━━━━━━━━━━━━━━━━━━━━━</span></div>
+
+  <p class="reliquary-note">The Reliquary is sealed each December and archived. A new record opens every January.</p>
+
+</div>
+
+<footer>
+  <span class="footer-bubble">🫧</span>
+  <div class="footer-title">THE VELVET HAVEN</div>
+  <div class="footer-sub">"Everyone's Shelter, Your Safe Haven." — Built by Tae 🫖🖤</div>
+</footer>
+
+<audio id="cm-audio"></audio>
+<button id="audio-btn" title="Play music">♪</button>
+<script src="vh-ocean.js"></script>
+</body>
+</html>

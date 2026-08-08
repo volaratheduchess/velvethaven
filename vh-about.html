@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — The Velvet Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vh-shared.css">
+  <style>
+    .portrait-section { display: grid; grid-template-columns: 210px 1fr; gap: 38px; align-items: start; }
+    .portrait-frame { position: relative; }
+    .portrait-frame img { width: 100%; display: block; border-radius: 3px; border: 1px solid rgba(58,181,197,0.2); filter: saturate(0.75) contrast(1.08); }
+    .portrait-placeholder { width: 100%; aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(8,42,64,0.8), rgba(4,17,31,0.9)); border: 1px dashed rgba(58,181,197,0.2); border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+    .portrait-placeholder span { font-size: 2.4rem; opacity: 0.2; }
+    .portrait-placeholder p { font-family: var(--f-disp); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--text-mute); text-transform: uppercase; }
+    .portrait-frame::after { content: '🫧'; position: absolute; bottom: -12px; right: -12px; font-size: 1.3rem; opacity: 0.3; animation: loaderBob 5s ease-in-out infinite; }
+    .stat-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .stat-pill { font-family: var(--f-disp); font-size: 0.6rem; letter-spacing: 0.18em; padding: 4px 13px; border: 1px solid rgba(26,122,138,0.35); background: rgba(26,122,138,0.07); color: var(--text-mute); border-radius: 2px; text-transform: uppercase; }
+    .stat-pill.gold { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.06); color: var(--gold); }
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .feature-box { background: linear-gradient(145deg, rgba(8,42,64,0.7), rgba(4,17,31,0.85)); border: 1px solid var(--panel-b); border-radius: 3px; padding: 20px 18px; text-align: center; position: relative; overflow: hidden; }
+    .feature-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, var(--teal), var(--gold)); opacity: 0.45; }
+    .feature-icon { font-size: 1.4rem; margin-bottom: 10px; display: block; }
+    .feature-title { font-family: var(--f-disp); font-size: 0.68rem; letter-spacing: 0.2em; color: var(--teal-pale); margin-bottom: 9px; text-transform: uppercase; }
+    .feature-text { font-family: var(--f-it); font-style: italic; font-size: 0.93rem; color: var(--text-mute); line-height: 1.7; }
+    .feature-list { font-family: var(--f-disp); font-size: 0.66rem; letter-spacing: 0.18em; line-height: 2.3; color: var(--text-dim); text-transform: uppercase; }
+    .phil-list { list-style: none; padding: 0; margin: 14px 0; display: flex; flex-direction: column; gap: 11px; }
+    .phil-list li { font-family: var(--f-body); font-size: 1.02rem; color: var(--text-dim); line-height: 1.75; padding: 11px 17px; background: linear-gradient(to right, rgba(26,122,138,0.08), rgba(4,17,31,0.4)); border-left: 2px solid rgba(58,181,197,0.3); border-radius: 0 2px 2px 0; }
+    .phil-list li strong { font-family: var(--f-disp); font-size: 0.68rem; letter-spacing: 0.14em; color: var(--teal-pale); display: block; margin-bottom: 4px; text-transform: uppercase; }
+    .info-note { background: linear-gradient(to right, rgba(58,181,197,0.06), rgba(4,17,31,0.4)); border-left: 3px solid rgba(58,181,197,0.3); padding: 14px 20px; border-radius: 0 2px 2px 0; margin-top: 16px; }
+    .info-note p { font-family: var(--f-body); font-size: 0.97rem; color: var(--text-dim); line-height: 1.8; }
+    @media (max-width: 768px) { .portrait-section { grid-template-columns: 1fr; } .portrait-placeholder { aspect-ratio: 1; max-width: 160px; margin: 0 auto; } .feature-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div id="loader"><div class="loader-bubble">🫖</div><div class="loader-text">steeping</div><div class="loader-wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+<canvas id="ocean-canvas"></canvas>
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">⚓ The Velvet Haven</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="vh-about.html" class="active">About</a>
+    <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+  </div>
+  <button class="nav-burger" onclick="toggleMenu()">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a><a href="vh-about.html">About</a>
+  <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+</div>
+
+<div class="page-header">
+  <div class="page-eyebrow">— who tends these waters —</div>
+  <h1>About the Haven</h1>
+  <p class="page-subtitle">A harbour built with intention. A thread woven with care.</p>
+  <div class="vh-divider"><span>🫧</span></div>
+</div>
+
+<div class="page-wrap" id="content" style="display:none;">
+
+  <div class="vh-card" style="margin-bottom:26px;">
+    <div class="portrait-section">
+      <div class="portrait-frame">
+        <img src="tae.jpg" alt="Taekhesis">
+      </div>
+      <div>
+        <div class="stat-row">
+          <span class="stat-pill gold">🫖 AdmiralTae</span>
+          <span class="stat-pill">Owner & Brewer</span>
+          <span class="stat-pill gold">She / Her</span>
+          <span class="stat-pill">Creator</span>
+        </div>
+        <p>Hey — I'm Tae, and if you've found your way here, you've earned it. The Velvet Haven is a private harbour I built with intention, for the creators I've had the privilege of featuring and working alongside.</p>
+        <p style="margin-top:10px;">It isn't a public square. It's a private parlour — warm, curated, and <em>yours</em>. Velvet: rich, tactile, luxurious. Haven: safe, sheltered, home.</p>
+        <div class="vh-quote" style="margin-top:16px;">
+          <p>"A golden thread woven through dark velvet — rare, intentional, unmistakable."</p>
+          <cite>— The Haven's founding principle</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vh-card" style="margin-bottom:26px;">
+    <div class="portrait-section">
+      <div class="portrait-frame">
+        <img src="volara.jpg" alt="Volara">
+      </div>
+      <div>
+        <div class="stat-row">
+          <span class="stat-pill gold">🪡 Copper Seamstress</span>
+          <span class="stat-pill">Founding Member</span>
+          <span class="stat-pill gold">She / Her</span>
+          <span class="stat-pill">Creator</span>
+        </div>
+        <p>Heya Hiya — I'm Volara, and welcome to Velvet Haven. It's more than a place to share bots — it's a <em>home</em>. A place to share the ups and downs of life, your triumphs and losses, and all the weird stuff that generators make (I'm looking at you, floppy ding-a-long).</p>
+        <p style="margin-top:10px;">I may make bots here, but I've made something infinitely more valuable — a family. And I invite you to join it.</p>
+        <div class="vh-quote" style="margin-top:16px;">
+          <p>"Let's make some chaos, with taste, of course."</p>
+          <cite>— Volara</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vh-card" style="margin-bottom:26px;">
+    <div class="portrait-section">
+      <div class="portrait-frame">
+        <img src="shaydee.jpg" alt="Shaydee">
+      </div>
+      <div>
+        <div class="stat-row">
+          <span class="stat-pill gold">🧜 Briny Menace</span>
+          <span class="stat-pill">Founding Member</span>
+          <span class="stat-pill gold">She / Her</span>
+          <span class="stat-pill">Creator</span>
+        </div>
+        <p>Hey, I’m Shaydee! I make bots, write lore, play games, mess around with character art, and regularly get distracted by a new idea halfway through whatever I was already doing.</p>
+        <p>I’m very much an “oh wait, I have an idea” person, which is usually how something simple ends up with a backstory, three side characters and several pages of lore nobody asked for.</p>
+        <p>I love creating things, bouncing ideas around with people, and seeing where things go once everyone starts adding their own brand of chaos. My corner of The Velvet Haven is probably going to be a mix of bots, worldbuilding, questionable decisions, occasional thirst, and whatever my brain has decided to latch onto that week.</p>
+        <div class="vh-quote" style="margin-top:16px;">
+          <p>"There was probably a plan at some point."</p>
+          <cite>— Shaydee</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-label">✦ What the Haven Is</div>
+  <div class="vh-card gold-left">
+    <div class="feature-grid">
+      <div class="feature-box"><span class="feature-icon">🌊</span><div class="feature-title">The Vision</div><p class="feature-text">A private, curated space for creators. Not a high-speed hub — a place where ideas are <em>steeped</em> until they're ready to break as a storm.</p></div>
+      <div class="feature-box"><span class="feature-icon">⚓</span><div class="feature-title">The Feeling</div><p class="feature-text">Warm but exclusive. Cosy but prestigious. Like being invited into a candlelit room that most people don't know exists.</p></div>
+    </div>
+  </div>
+
+  <div class="s-label">✦ Our Philosophy</div>
+  <div class="vh-card">
+    <h2>The Five Threads</h2>
+    <p>At the heart of the Haven is a belief that the best things are built slowly, with care, and in good company.</p>
+    <ul class="phil-list">
+      <li><strong>Support Without Borders</strong>We lift each other at every stage. Whether you're a veteran or still finding your voice — the tide rises for all of us.</li>
+      <li><strong>A Space Without Judgment</strong>We celebrate diversity. Different viewpoints, styles, dreams — all anchored here safely.</li>
+      <li><strong>Optimism & Uplifting Tides</strong>Our harbour is built on positivity. Every interaction leaves you feeling seaworthy.</li>
+      <li><strong>The Mentorship Current</strong>Knowledge flows, never hoards. More experienced creators pass wisdom downstream.</li>
+      <li><strong>Calm Waters & Drama-Free</strong>The Haven is a sanctuary from rough seas. Drama-free so everyone can focus on their art.</li>
+    </ul>
+    <div class="info-note"><p>🪡 <strong style="color:var(--teal-pale)">In this harbour, we don't fight the current — we learn to sail it together.</strong> The only competition is with our own past work, and the goal is always to create something that matters.</p></div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-bubble">🫧</span>
+  <div class="footer-title">THE VELVET HAVEN</div>
+  <div class="footer-sub">"Everyone's Shelter, Your Safe Haven." — Built by Tae 🫖🖤</div>
+</footer>
+
+<audio id="cm-audio"></audio>
+<button id="audio-btn" title="Play music">♪</button>
+<script src="vh-ocean.js"></script>
+</body>
+</html>

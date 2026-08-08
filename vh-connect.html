@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect — The Velvet Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vh-shared.css">
+  <style>
+    .discord-hero { background: var(--panel); border: 1px solid var(--panel-b); border-top: 3px solid var(--gold); border-radius: 3px; padding: 42px 38px; text-align: center; margin-bottom: 34px; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+    .discord-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(26,122,138,0.05) 0%, transparent 70%); pointer-events: none; }
+    .discord-hero .big-icon { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+    .discord-hero h2 { font-family: var(--f-disp); font-size: 1.3rem; letter-spacing: 0.22em; color: var(--gold-lt); margin-bottom: 10px; text-transform: uppercase; }
+    .discord-hero p { font-family: var(--f-it); font-style: italic; font-size: 1.08rem; color: var(--text-dim); line-height: 1.85; max-width: 500px; margin: 0 auto 22px; }
+    .discord-hero p em { color: var(--teal-pale); }
+    .server-map { display: flex; flex-direction: column; gap: 9px; }
+    .cat-row { background: var(--panel); border: 1px solid var(--panel-b); border-left: 3px solid rgba(26,122,138,0.4); border-radius: 2px; overflow: hidden; backdrop-filter: blur(8px); }
+    .cat-row.gold-cat { border-left-color: rgba(201,168,76,0.5); }
+    .cat-header { display: flex; align-items: center; gap: 11px; padding: 11px 18px; background: rgba(0,0,0,0.15); }
+    .cat-icon { font-size: 0.95rem; }
+    .cat-name { font-family: var(--f-disp); font-size: 0.66rem; letter-spacing: 0.25em; color: var(--teal-pale); text-transform: uppercase; flex: 1; }
+    .cat-row.gold-cat .cat-name { color: var(--gold); }
+    .cat-desc { font-family: var(--f-it); font-style: italic; font-size: 0.78rem; color: var(--text-mute); }
+    .ch-list { padding: 7px 18px 12px; display: flex; flex-direction: column; gap: 3px; }
+    .ch-item { display: flex; align-items: flex-start; gap: 9px; padding: 4px 7px; border-radius: 2px; transition: background 0.2s; }
+    .ch-item:hover { background: rgba(26,122,138,0.06); }
+    .ch-hash { color: var(--text-mute); font-size: 0.82rem; flex-shrink: 0; margin-top: 1px; }
+    .ch-name { font-family: var(--f-body); font-size: 0.92rem; color: var(--text-dim); flex: 1; }
+    .ch-note { font-size: 0.74rem; color: var(--text-mute); font-style: italic; margin-top: 1px; }
+    .discord-preview { background: #2b2d31; border-radius: 6px; padding: 16px 20px; border-left: 4px solid var(--teal); max-width: 540px; }
+    .dp-bot { font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; font-family: 'Whitney','Helvetica Neue',sans-serif; }
+    .dp-tag { font-size: 0.56rem; background: #5865f2; color: #fff; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+    .dp-body { font-size: 0.88rem; color: #dcddde; line-height: 1.85; white-space: pre-line; font-family: 'Whitney','Helvetica Neue',sans-serif; }
+    .bot-section { display: grid; grid-template-columns: 160px 1fr; gap: 28px; align-items: center; }
+    .bot-portrait-frame { position: relative; }
+    .bot-portrait-frame img { width: 100%; display: block; border-radius: 3px; border: 1px solid rgba(58,181,197,0.2); filter: saturate(0.75) contrast(1.08); }
+    .bot-portrait-placeholder { width: 100%; aspect-ratio: 1; background: linear-gradient(145deg, rgba(8,42,64,0.8), rgba(4,17,31,0.9)); border: 1px dashed rgba(58,181,197,0.2); border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    .bot-portrait-placeholder span { font-size: 2rem; opacity: 0.2; }
+    .bot-portrait-placeholder p { font-family: var(--f-disp); font-size: 0.55rem; letter-spacing: 0.25em; color: var(--text-mute); text-transform: uppercase; text-align: center; }
+    @media (max-width: 600px) { .bot-section { grid-template-columns: 1fr; } .bot-portrait-frame { max-width: 160px; margin: 0 auto; } }
+  </style>
+</head>
+<body>
+<div id="loader"><div class="loader-bubble">⚓</div><div class="loader-text">dropping anchor</div><div class="loader-wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+<canvas id="ocean-canvas"></canvas>
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">⚓ The Velvet Haven</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="vh-about.html">About</a>
+    <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html" class="active">Connect</a>
+  </div>
+  <button class="nav-burger" onclick="toggleMenu()">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a><a href="vh-about.html">About</a>
+  <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+</div>
+
+<div class="page-header">
+  <div class="page-eyebrow">— find the harbour —</div>
+  <h1>Connect</h1>
+  <p class="page-subtitle">The place where the tide brings us together.</p>
+  <div class="vh-divider"><span>⚓</span></div>
+</div>
+
+<div class="page-wrap" id="content" style="display:none;">
+
+  <div class="discord-hero">
+    <span class="big-icon">💬</span>
+    <h2>The Velvet Haven</h2>
+    <p>An invite-only Discord community built by creators for creators. A private harbour — warm, curated, and yours. <em>If you've been invited, you've earned it.</em></p>
+    <a href="https://discord.gg/velvethaven" target="_blank" class="vh-btn gold">Join the Haven →</a>
+  </div>
+
+
+  <div class="s-label" style="margin-top:40px;">✦ The Bots — The Haven's Helpers</div>
+  <div class="vh-card gold-left" style="margin-bottom:22px;">
+    <div class="bot-section">
+      <div class="bot-portrait-frame">
+          <img src="velvetcup.png" alt="Velvetcup">
+      </div>
+      <div>
+        <h2>Meet Velvetcup 🧵</h2>
+        <p>Sibling bot to Tidecup. The brewer of the harbour's tides. Steeping the seas.</p>
+      </div>
+    </div>
+  </div>
+  <div class="vh-card gold-left" style="margin-bottom:22px;">
+    <div class="bot-section">
+      <div class="bot-portrait-frame">
+      <img src="tidecup.png" alt="Tidecup">
+      </div>
+      <div>
+        <h2>Meet Tidecup 🌊</h2>
+        <p>Sibling bot to Velvetcup. Keeper of the Haven. Watcher of the shores. The cup that holds the sea. Born of deep water and velvet dark. TideCup tends the Haven so the Lightkeepers don't have to.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-bubble">🫧</span>
+  <div class="footer-title">THE VELVET HAVEN</div>
+  <div class="footer-sub">"Everyone's Shelter, Your Safe Haven." — Built by Tae 🫖🖤</div>
+</footer>
+
+<audio id="cm-audio"></audio>
+<button id="audio-btn" title="Play music">♪</button>
+<script src="vh-ocean.js"></script>
+</body>
+</html>

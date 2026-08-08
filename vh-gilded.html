@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gilded Threads — The Velvet Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vh-shared.css">
+  <style>
+    .gilded-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 26px; margin-top: 12px; }
+    .g-card { height: 400px; perspective: 1100px; cursor: pointer; }
+    .g-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(.4,.2,.2,1); }
+    .g-card:hover .g-inner { transform: rotateY(180deg); }
+    .g-front, .g-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 3px; overflow: hidden; }
+    .g-back { pointer-events: none; }
+    .g-card:hover .g-front { pointer-events: none; }
+    .g-card:hover .g-back { pointer-events: auto; }
+    .g-front { border: 1px solid rgba(58,181,197,0.2); position: relative; }
+    .g-front::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, var(--teal), var(--gold), var(--teal)); z-index: 2; }
+    .g-front img { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: saturate(0.75) contrast(1.08); transition: filter 0.4s; display: block; }
+    .g-card:hover .g-front img { filter: saturate(1) contrast(1.1); }
+    .g-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 18px 14px; background: linear-gradient(to top, rgba(4,17,31,0.97), transparent); z-index: 1; }
+    .g-name { font-family: var(--f-disp); font-size: 0.82rem; letter-spacing: 0.22em; color: var(--teal-pale); text-transform: uppercase; margin-bottom: 2px; }
+    .g-card.gold-card .g-name { color: var(--gold-lt); }
+    .g-role { font-family: var(--f-it); font-style: italic; font-size: 0.84rem; color: var(--text-mute); }
+    .g-placeholder { width: 100%; height: 100%; background: linear-gradient(145deg, rgba(8,42,64,0.9), rgba(4,17,31,0.95)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+    .g-placeholder span { font-size: 2.8rem; opacity: 0.18; }
+    .g-placeholder p { font-family: var(--f-disp); font-size: 0.6rem; letter-spacing: 0.28em; color: var(--text-mute); text-transform: uppercase; }
+    .g-back { transform: rotateY(180deg); background: linear-gradient(145deg, rgba(8,42,64,0.95), rgba(4,17,31,0.98)); border: 1px solid rgba(58,181,197,0.2); display: flex; flex-direction: column; padding: 22px 18px 18px; }
+    .g-back::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, var(--teal), var(--gold)); }
+    .gb-name { font-family: var(--f-disp); font-size: 0.82rem; letter-spacing: 0.2em; color: var(--teal-pale); text-transform: uppercase; margin-bottom: 3px; }
+    .g-card.gold-card .gb-name { color: var(--gold-lt); }
+    .gb-role { font-family: var(--f-it); font-style: italic; font-size: 0.84rem; color: var(--text-mute); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(58,181,197,0.12); }
+    .gb-desc { font-family: var(--f-body); font-size: 0.9rem; color: var(--text-dim); line-height: 1.8; flex: 1; }
+    .gb-desc em { color: var(--gold-lt); font-style: italic; }
+    .gb-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
+    .loom-banner { background: var(--panel); border: 1px solid var(--panel-b); border-top: 2px solid rgba(58,181,197,0.4); border-radius: 3px; padding: 26px 34px; margin-bottom: 30px; text-align: center; backdrop-filter: blur(10px); }
+    .loom-banner p { font-family: var(--f-it); font-style: italic; font-size: 1.1rem; color: var(--text-dim); line-height: 1.9; }
+    .loom-banner em { color: var(--gold-lt); }
+    @media (max-width: 768px) { .gilded-grid { grid-template-columns: 1fr 1fr; gap: 14px; } .g-card { height: 310px; } }
+    @media (max-width: 480px) { .gilded-grid { grid-template-columns: 1fr; } .g-card { height: 380px; } }
+  </style>
+</head>
+<body>
+<div id="loader"><div class="loader-bubble">✨</div><div class="loader-text">weaving the threads</div><div class="loader-wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+<canvas id="ocean-canvas"></canvas>
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">⚓ The Velvet Haven</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="vh-about.html">About</a>
+    <a href="vh-gilded.html" class="active">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+  </div>
+  <button class="nav-burger" onclick="toggleMenu()">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a><a href="vh-about.html">About</a>
+  <a href="vh-gilded.html">Gilded Threads</a><a href="vh-tidal-court.html">Tidal Court</a><a href="vh-connect.html">Connect</a>
+</div>
+
+<div class="page-header">
+  <div class="page-eyebrow">— the golden thread in the velvet —</div>
+  <h1>The Gilded Threads</h1>
+  <p class="page-subtitle">Featured creators. Chosen because they belong here.</p>
+  <div class="vh-divider"><span>✨</span></div>
+</div>
+
+<div class="page-wrap" id="content" style="display:none;">
+
+  <div class="loom-banner">
+    <p>These are the threads that give the Haven its shimmer. Creators chosen not for numbers, but for <em>craft, character, and the rare quality of their work</em>. Hover any card to learn more.</p>
+  </div>
+
+  <div class="s-label gold-label">✦ THE BREW MASTER</div>
+  <div class="gilded-grid" style="margin-bottom:44px;">
+    <div class="g-card gold-card">
+      <div class="g-inner">
+        <div class="g-front">
+          <img src="tae.jpg" alt="Taekhesis">
+          <div class="g-overlay"><div class="g-name">Taekhesis</div><div class="g-role">High Teapot · Owner · The Admiraltae</div></div>
+        </div>
+        <div class="g-back">
+          <div class="gb-name">Taekhesis</div><div class="gb-role">High Teapot · Owner · She/Her</div>
+          <div class="gb-desc">✦ Scriptweaver of Entangled Worlds • Artisan of Constructed Chaos ✦<br><br>Fae courts bicker, omegaverses bleed and brood, modern disasters flirt with gothic ruins — <em>and she keeps score</em>. The brewer of this harbour.</div>
+          <div class="gb-links">
+            <a href="https://crushon.ai/en/profile/dc8e234c-f5a4-11ef-8436-0e5aea35500c?shared=true" target="_blank" class="crew-link">CrushOn</a>
+            <a href="https://saucepan.ai/u/Taekhesis" target="_blank" class="crew-link">SaucePan</a>
+            <a href="https://linkin.love/creator/Taekhesis" target="_blank" class="crew-link">linkin.love</a>
+            <a href="https://tipsy.chat/profile/1755180264266556474" target="_blank" class="crew-link">Tipsy Chat</a>
+            <a href="https://craveu.ai/user/BACpmbDO" target="_blank" class="crew-link">CraveU</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-label gold-label">✦ THE GILDED THREADS</div>
+  <div class="gilded-grid">
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="volara.jpg" alt="Volara"><div class="g-overlay"><div class="g-name">Volara</div><div class="g-role">Duchess of Velvet Gears · The Brass Foundry</div></div></div>
+        <div class="g-back"><div class="gb-name">Volara</div><div class="gb-role">Duchess of Brass &amp; Velvet · Feral Elegance Incarnate</div><div class="gb-desc">Not everyone deserves redemption. Some deserve obsession. Some deserve ruin. Some deserve both. Welcome to The Gilded Cage, darlings. Enjoy the show,<em> you're here to stay.</em></div><div class="gb-links"><a href="https://crushon.ai/en/profile/986e463d-5a2b-11ee-8942-a6845aee3496?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/Volara" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Volara" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1757452055158431069" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/TbSGszXP" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="ava.jpg" alt="AvacynGrace"><div class="g-overlay"><div class="g-name">AvacynGrace</div><div class="g-role">Chaos Witch · Avacyn's Garden</div></div></div>
+        <div class="g-back"><div class="gb-name">AvacynGrace</div><div class="gb-role">Chaos Witch · Character Conjurer · Deity of Emotional Damage</div><div class="gb-desc">Craft worlds where the vines drip with sin, the dialogue cuts deeper than steel, and every kiss tastes like <em>prophecy and regret</em>.</div><div class="gb-links"><a href="https://crushon.ai/profile/67764853-1ec7-11f0-bf32-1eb704758a0a?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/AvacynGrace" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Avacyn_Grace" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1755178895597838243" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/ynyKOQG5" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="lemon.png" alt="LemonGal24601"><div class="g-overlay"><div class="g-name">LemonGal24601</div><div class="g-role">Part-time delight · Full-time gremlin</div></div></div>
+        <div class="g-back"><div class="gb-name">LemonGal24601</div><div class="gb-role">⋆｡‧˚ʚ🍋ɞ˚‧｡⋆</div><div class="gb-desc">Your local Lemon. Flavors that bite first and charm later. Slow-made, sharp-tasting, <em>dangerously addictive</em>. Careful... not everyone can handle a sip.</div><div class="gb-links"><a href="https://crushon.ai/en/profile/277e2097-04b4-11ef-b250-aec05679e59f?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/LemonGal24601" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/LemonGal24601" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1755179592506765944" target="_blank" class="crew-link">Tipsy Chat</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="gangan.jpg" alt="GanGan"><div class="g-overlay"><div class="g-name">GanGan</div><div class="g-role">First Gremlin · Feline Council Chair</div></div></div>
+        <div class="g-back"><div class="gb-name">GanGan</div><div class="gb-role">First Gremlin · Feline Council of Gremlins™</div><div class="gb-desc">A writer, creator, and professional button-presser specializing in unhinged, personality-driven content that blurs humor and menace. <em>Officially GanGan runs the show — unofficially, creative direction is overseen by a deeply judgmental cat.</em></div><div class="gb-links"><a href="https://crushon.ai/en/profile/3071b8a7-d014-11ef-ab5a-9ab30b98c416?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/GanGan" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/gangan8011" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1755179060172926168" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/nncoeThu" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="shaydee.jpg" alt="Shaydee"><div class="g-overlay"><div class="g-name">Shaydee</div><div class="g-role">Cozy chaos · Dice Hoarder · Tea absolutist</div></div></div>
+        <div class="g-back"><div class="gb-name">Shaydee</div><div class="gb-role">Creative gremlin with a soft heart · Norway</div><div class="gb-desc">RPGs, OCs, crochet, resin, and tea as a lifeblood. <em>Comfort, humour, and rich lore</em> — all woven with care.</div><div class="gb-links"><a href="https://crushon.ai/en/profile/019760ef-1e00-11f0-8503-7e1f88a735fe?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/Shaydee" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Shaydee" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1760463382688367667" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/hThOD9QJ" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+        <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="raonlee.jpg" alt="RaonLee"><div class="g-overlay"><div class="g-name">RaonLee</div><div class="g-role">Male &amp; female bots · Late nights 🐾</div></div></div>
+        <div class="g-back"><div class="gb-name">RaonLee</div><div class="gb-role">🐾 One creator, two accounts, a lot of late nights</div><div class="gb-desc">Bots with complicated edges — the kind you didn't expect to get attached to and then did anyway 💌. Also runs RxMICHxN for female bots — <em>same obsessive care, different story</em></div><div class="gb-links"><a href="https://crushon.ai/en/profile/ec31a899-1dc0-11ef-865e-aa6f3eca0785?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/Raonlee" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Raonlee" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1754902539978876341?tab=Characters" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/26eFRrIc" target="_blank" class="crew-link">CraveU</a><a href="https://www.sakura.fm/user/raonlee?allowNsfw=true" target="_blank" class="crew-link">SakuraFM</a><a href="https://www.juicychat.ai/userdetailspace/1838325229059969025" target="_blank" class="crew-link">JuicyChat</a><a href="https://spicychat.ai/creator/raon_lee" target="_blank" class="crew-link">SpicyChat</a><a href="https://janitorai.com/profiles/423be8c4-84ca-4455-a725-b9db9944fefc_profile-of-raonlee" target="_blank" class="crew-link">JanitorAI</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="valanadesu.jpg" alt="Valanadesu"><div class="g-overlay"><div class="g-name">Valanadesu</div><div class="g-role">Dreamy fictional men · Reader × character girlie</div></div></div>
+        <div class="g-back"><div class="gb-name">Valanadesu</div><div class="gb-role">Valana or Vala for short ✨</div><div class="gb-desc">Lives for crafting dreamy fictional men — the dominant types who chase your love and attention with everything they've got. Full smut, story-driven adventures, or a blend of heat and heart. <em>Commissions open — always building your next favorite man (or men).</em></div><div class="gb-links"><a href="https://crushon.ai/en/profile/fd00a1ae-7e0e-11ee-b842-c228e310ba43?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/Valanadesu" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Valanadesu" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1755149625225551379?tab=Characters" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/A8m1QuzL" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <div class="g-inner">
+        <div class="g-front"><img src="trashpanda.jpg" alt="Trxshpxndx"><div class="g-overlay"><div class="g-name">Trxshpxndx</div><div class="g-role">Story-driven · Consequence-steeped</div></div></div>
+        <div class="g-back"><div class="gb-name">Trxshpxndx</div><div class="gb-role">Dominant males · Complex inner lives · Backstories that leave a mark</div><div class="gb-desc">From the quiet contemplation of a Katagiri samurai to the drive of an Erios City kingpin — <em>proactive, presence-driven, steeped in consequence</em>.</div><div class="gb-links"><a href="https://crushon.ai/en/profile/a13d23a2-ee1f-11ee-a5ba-0ebfd7b87e14?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/Trxshpxndx" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/Trxshpxndx" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1761486219832999325" target="_blank" class="crew-link">Tipsy Chat</a><a href="https://craveu.ai/user/glOw2Svn" target="_blank" class="crew-link">CraveU</a></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="vh-quote" style="margin-top:40px;">
+    <p>"You were chosen because you belong here. The gilded thread running through everything we build together? That's you."</p>
+    <cite>— Tae, High Teapot 🫖</cite>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-bubble">🫧</span>
+  <div class="footer-title">THE VELVET HAVEN</div>
+  <div class="footer-sub">"Everyone's Shelter, Your Safe Haven." — Built by Tae 🫖🖤</div>
+</footer>
+
+<audio id="cm-audio"></audio>
+<button id="audio-btn" title="Play music">♪</button>
+<script src="vh-ocean.js"></script>
+</body>
+</html>
