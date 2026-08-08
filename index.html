@@ -953,8 +953,26 @@ footer {
   }
   if (btn) {
     syncBtn();
-    btn.addEventListener('click', () => { audio.paused ? audio.play() : audio.pause(); syncBtn(); localStorage.setItem(AUDIO_PLAYING_KEY, audio.paused ? '0' : '1'); });
+    btn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          syncBtn();
+          localStorage.setItem(AUDIO_PLAYING_KEY, '1');
+        }).catch(err => {
+          console.error('[Velvet Haven] audio.play() failed:', err.name, err.message, '| src:', audio.currentSrc);
+          syncBtn();
+          localStorage.setItem(AUDIO_PLAYING_KEY, '0');
+        });
+      } else {
+        audio.pause();
+        syncBtn();
+        localStorage.setItem(AUDIO_PLAYING_KEY, '0');
+      }
+    });
   }
+  audio.addEventListener('error', () => {
+    console.error('[Velvet Haven] audio failed to load:', audio.error, '| src:', audio.currentSrc);
+  });
   audio.addEventListener('play', syncBtn);
   audio.addEventListener('pause', syncBtn);
 

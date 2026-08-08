@@ -27,7 +27,7 @@
     .g-placeholder { width: 100%; height: 100%; background: linear-gradient(145deg, rgba(8,42,64,0.9), rgba(4,17,31,0.95)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
     .g-placeholder span { font-size: 2.8rem; opacity: 0.18; }
     .g-placeholder p { font-family: var(--f-disp); font-size: 0.6rem; letter-spacing: 0.28em; color: var(--text-mute); text-transform: uppercase; }
-    .g-back { transform: rotateY(180deg); background: linear-gradient(145deg, rgba(8,42,64,0.95), rgba(4,17,31,0.98)); border: 1px solid rgba(58,181,197,0.2); display: flex; flex-direction: column; padding: 22px 18px 18px; }
+    .g-back { transform: rotateY(180deg); background: linear-gradient(145deg, rgba(8,42,64,0.95), rgba(4,17,31,0.98)); border: 1px solid rgba(58,181,197,0.2); display: flex; flex-direction: column; padding: 22px 18px 18px; overflow-y: auto; }
     .g-back::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, var(--teal), var(--gold)); }
     .gb-name { font-family: var(--f-disp); font-size: 0.82rem; letter-spacing: 0.2em; color: var(--teal-pale); text-transform: uppercase; margin-bottom: 3px; }
     .g-card.gold-card .gb-name { color: var(--gold-lt); }
@@ -38,8 +38,8 @@
     .loom-banner { background: var(--panel); border: 1px solid var(--panel-b); border-top: 2px solid rgba(58,181,197,0.4); border-radius: 3px; padding: 26px 34px; margin-bottom: 30px; text-align: center; backdrop-filter: blur(10px); }
     .loom-banner p { font-family: var(--f-it); font-style: italic; font-size: 1.1rem; color: var(--text-dim); line-height: 1.9; }
     .loom-banner em { color: var(--gold-lt); }
-    @media (max-width: 768px) { .gilded-grid { grid-template-columns: 1fr 1fr; gap: 14px; } .g-card { height: 310px; } }
-    @media (max-width: 480px) { .gilded-grid { grid-template-columns: 1fr; } .g-card { height: 380px; } }
+    @media (max-width: 768px) { .gilded-grid { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; } .g-card { height: 420px; } }
+    @media (max-width: 480px) { .gilded-grid { grid-template-columns: 1fr; } .g-card { height: 440px; } }
   </style>
 </head>
 <body>
@@ -113,7 +113,7 @@
 
     <div class="g-card">
       <div class="g-inner">
-        <div class="g-front"><img src="lemon.png" alt="LemonGal24601"><div class="g-overlay"><div class="g-name">LemonGal24601</div><div class="g-role">Part-time delight · Full-time gremlin</div></div></div>
+        <div class="g-front"><img src="https://s13.gifyu.com/images/bmAtY.md.png" alt="LemonGal24601"><div class="g-overlay"><div class="g-name">LemonGal24601</div><div class="g-role">Part-time delight · Full-time gremlin</div></div></div>
         <div class="g-back"><div class="gb-name">LemonGal24601</div><div class="gb-role">⋆｡‧˚ʚ🍋ɞ˚‧｡⋆</div><div class="gb-desc">Your local Lemon. Flavors that bite first and charm later. Slow-made, sharp-tasting, <em>dangerously addictive</em>. Careful... not everyone can handle a sip.</div><div class="gb-links"><a href="https://crushon.ai/en/profile/277e2097-04b4-11ef-b250-aec05679e59f?shared=true" target="_blank" class="crew-link">CrushOn</a><a href="https://saucepan.ai/u/LemonGal24601" target="_blank" class="crew-link">SaucePan</a><a href="https://linkin.love/creator/LemonGal24601" target="_blank" class="crew-link">linkin.love</a><a href="https://tipsy.chat/profile/1755179592506765944" target="_blank" class="crew-link">Tipsy Chat</a></div></div>
       </div>
     </div>
