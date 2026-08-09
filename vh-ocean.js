@@ -435,6 +435,20 @@
     if (navigating) return;
     navigating = true;
 
+    const loader = document.getElementById('loader');
+    const pageRoot = document.getElementById('page-root');
+
+    closeMobileMenu();
+    // Bring the loader back up immediately (reusing whatever's already there
+    // so there's no blank flash while we wait on the network), then swap its
+    // icon/text to the destination page's own once we have it.
+    if (loader) {
+      loader.classList.remove('fade-out');
+      loader.style.display = 'flex';
+      document.body.classList.add('loading');
+    }
+    if (pageRoot) pageRoot.classList.remove('show');
+
     fetch(url).then(res => {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.text();
@@ -443,27 +457,34 @@
       const newRoot = doc.getElementById('page-root');
       const newStyle = doc.getElementById('page-style');
       const newTitle = doc.querySelector('title');
+      const newLoader = doc.getElementById('loader');
       if (!newRoot) throw new Error('no #page-root in fetched page');
 
-      const pageRoot = document.getElementById('page-root');
       const pageStyle = document.getElementById('page-style');
 
-      closeMobileMenu();
-      pageRoot.classList.remove('show');
+      // Swap everything while it's still hidden behind the opaque loader.
+      if (loader && newLoader) loader.innerHTML = newLoader.innerHTML;
+      pageRoot.innerHTML = newRoot.innerHTML;
+      if (pageStyle && newStyle) pageStyle.textContent = newStyle.textContent;
+      if (newTitle) document.title = newTitle.textContent;
+      updateActiveNav(pageNameFromUrl(url));
+      window.scrollTo(0, 0);
+      if (push) history.pushState({ vh: true }, '', url);
 
-      setTimeout(() => {
-        pageRoot.innerHTML = newRoot.innerHTML;
-        if (pageStyle && newStyle) pageStyle.textContent = newStyle.textContent;
-        if (newTitle) document.title = newTitle.textContent;
-        updateActiveNav(pageNameFromUrl(url));
-        window.scrollTo(0, 0);
-        // Force a reflow so the opacity transition actually replays.
+      if (loader) {
+        setTimeout(() => loader.classList.add('fade-out'), 1400);
+        setTimeout(() => {
+          loader.style.display = 'none';
+          document.body.classList.remove('loading');
+          void pageRoot.offsetWidth;
+          pageRoot.classList.add('show');
+          navigating = false;
+        }, 2800);
+      } else {
         void pageRoot.offsetWidth;
         pageRoot.classList.add('show');
-
-        if (push) history.pushState({ vh: true }, '', url);
         navigating = false;
-      }, 260);
+      }
     }).catch(err => {
       console.error('[Velvet Haven] SPA navigation failed, falling back to full load:', err);
       window.location.href = url;
