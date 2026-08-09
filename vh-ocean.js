@@ -489,3 +489,15 @@ function toggleMenu() {
   const m = document.getElementById('mobileMenu');
   if (m) m.classList.toggle('open');
 }
+
+/* Touch-device fallback for the Gilded Threads flip cards (see the
+   @media (hover: none) rules in vh-gilded.html). Delegated on document
+   so it keeps working after an SPA content swap without re-binding. */
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.g-card');
+  if (!card) return;
+  if (e.target.closest('a')) return; // let real links navigate normally
+  if (window.matchMedia('(hover: none)').matches) {
+    card.classList.toggle('flipped');
+  }
+});
