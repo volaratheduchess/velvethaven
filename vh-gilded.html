@@ -12,19 +12,6 @@
     .g-card { height: 400px; perspective: 1100px; cursor: pointer; position: relative; isolation: isolate; overflow: hidden; }
     .g-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(.4,.2,.2,1); }
     .g-card:hover .g-inner { transform: rotateY(180deg); }
-    /* Touch devices don't have real :hover, and iOS Safari has a long-standing
-       bug where backface-visibility:hidden doesn't reliably hide the reversed
-       face — it can bleed through mirrored behind the other face. So on any
-       device without true hover, skip the 3D flip entirely and use a plain
-       tap-to-reveal swap instead (no transform/perspective involved at all,
-       so there's nothing for that bug to latch onto). */
-    @media (hover: none) {
-      .g-inner { transform: none !important; transition: none; }
-      .g-back { transform: none; backface-visibility: visible; -webkit-backface-visibility: visible; display: none; }
-      .g-front { backface-visibility: visible; -webkit-backface-visibility: visible; }
-      .g-card.flipped .g-front { display: none; }
-      .g-card.flipped .g-back { display: flex; pointer-events: auto; }
-    }
     .g-front, .g-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 3px; overflow: hidden; }
     .g-back { pointer-events: none; }
     .g-card:hover .g-front { pointer-events: none; }
@@ -53,6 +40,22 @@
     .loom-banner em { color: var(--gold-lt); }
     @media (max-width: 768px) { .gilded-grid { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; } .g-card { height: 420px; } }
     @media (max-width: 480px) { .gilded-grid { grid-template-columns: 1fr; } .g-card { height: 440px; } }
+
+    /* Touch devices don't have real :hover, and iOS Safari has a long-standing
+       bug where backface-visibility:hidden doesn't reliably hide the reversed
+       face — it can bleed through mirrored behind the other face. So on any
+       device without true hover, skip the 3D flip entirely and use a plain
+       tap-to-reveal swap instead (no transform/perspective involved at all,
+       so there's nothing for that bug to latch onto). This block is placed
+       last on purpose — it needs to win over the earlier unconditional
+       .g-back rule that also sets display/transform. */
+    @media (hover: none) {
+      .g-inner { transform: none !important; transition: none; }
+      .g-back { transform: none; backface-visibility: visible; -webkit-backface-visibility: visible; display: none; }
+      .g-front { backface-visibility: visible; -webkit-backface-visibility: visible; }
+      .g-card.flipped .g-front { display: none; }
+      .g-card.flipped .g-back { display: flex; pointer-events: auto; }
+    }
   </style>
 </head>
 <body>
