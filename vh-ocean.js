@@ -194,6 +194,16 @@
   window.addEventListener('resize', resize);
 })();
 
+/* Shared registry: anything that needs to re-run after the SPA router swaps
+   #page-root's content (because its target element just got replaced) pushes
+   itself in here instead of the router needing to know about it by name. */
+var _vhPageSwapHooks = [];
+function onPageSwap() {
+  _vhPageSwapHooks.forEach(function (fn) {
+    try { fn(); } catch (e) { console.error('[Velvet Haven] page-swap hook failed:', e); }
+  });
+}
+
 /* ── SHARED: loader, audio, mobile menu ──
    Runs immediately (script tag sits at the end of body, so the DOM
    is already parsed) instead of waiting on window 'load', which
@@ -468,6 +478,7 @@
       if (pageStyle && newStyle) pageStyle.textContent = newStyle.textContent;
       if (newTitle) document.title = newTitle.textContent;
       updateActiveNav(pageNameFromUrl(url));
+      onPageSwap();
       window.scrollTo(0, 0);
       if (push) history.pushState({ vh: true }, '', url);
 
@@ -522,3 +533,112 @@ document.addEventListener('click', (e) => {
     card.classList.toggle('flipped');
   }
 });
+
+/* ── WHO'S AWAKE ──
+   Public-facing version of the Anchorlight schedule from Moderator HQ.
+   Each person has a time zone (for the clock) and an active window
+   written in UTC by default; basis:"local" writes it in their own
+   clock time instead, so it follows their own daylight-saving changes. */
+(function setupWhosAwake() {
+  var AWAKE_CREW = [
+    { id: 'tae', name: 'Tae', zone: 'Asia/Kuala_Lumpur', start: '02:00', end: '15:00' },
+    { id: 'volara', name: 'Volara', zone: 'America/Chicago', start: '16:00', end: '05:00' },
+    { id: 'shaydee', name: 'Shaydee', zone: 'Europe/Berlin', start: '09:00', end: '00:00', basis: 'local' }
+  ];
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function toMin(hhmm) { var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1] || 0); }
+  function inWindow(now, s, e) { return s === e ? true : (s < e ? (now >= s && now < e) : (now >= s || now < e)); }
+  function minsUntil(now, target) { return (target - now + 1440) % 1440; }
+  function dur(m) { var h = Math.floor(m / 60), r = m % 60; return h ? h + 'h' + (r ? ' ' + r + 'm' : '') : r + 'm'; }
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function utcLabel(min) { return pad2(Math.floor(min / 60) % 24) + ':' + pad2(min % 60); }
+  function zoneTime(zone, d) { return new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d); }
+  function zoneDay(zone, d) { return new Intl.DateTimeFormat('en-GB', { timeZone: zone, weekday: 'short', day: 'numeric', month: 'short' }).format(d).replace(',', ''); }
+  function zoneOffsetMin(zone, d) {
+    var p = {};
+    new Intl.DateTimeFormat('en-US', { timeZone: zone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+      .formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+    var asUtc = Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute, +p.second);
+    return Math.round((asUtc - Math.floor(d.getTime() / 1000) * 1000) / 60000);
+  }
+  function zoneOffset(zone, d) {
+    var m = zoneOffsetMin(zone, d), a = Math.abs(m);
+    return 'UTC' + (m < 0 ? '−' : '+') + Math.floor(a / 60) + (a % 60 ? ':' + pad2(a % 60) : '');
+  }
+  function utcWindow(p, now) {
+    var s = toMin(p.start), e = toMin(p.end);
+    if (p.basis !== 'local') return { s: s, e: e };
+    var off = zoneOffsetMin(p.zone, now);
+    return { s: (((s - off) % 1440) + 1440) % 1440, e: (((e - off) % 1440) + 1440) % 1440 };
+  }
+  function crewState(p, now) {
+    var n = now.getUTCHours() * 60 + now.getUTCMinutes(), w = utcWindow(p, now);
+    var awake = inWindow(n, w.s, w.e);
+    return { awake: awake, until: minsUntil(n, awake ? w.e : w.s), s: w.s, e: w.e };
+  }
+  function localWindow(p, now) {
+    if (p.basis === 'local') return utcLabel(toMin(p.start)) + ' to ' + utcLabel(toMin(p.end));
+    var at = function (min) { return zoneTime(p.zone, new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), Math.floor(min / 60), min % 60))); };
+    return at(toMin(p.start)) + ' to ' + at(toMin(p.end));
+  }
+  function crewCard(p, now) {
+    var st = crewState(p, now);
+    try {
+      return '<div class="awake-card ' + (st.awake ? 'is-awake' : 'is-asleep') + '"><div class="awake-name">' + esc(p.name) + '</div>' +
+        '<div class="awake-time">' + zoneTime(p.zone, now) + '</div>' +
+        '<div class="awake-sub">' + zoneDay(p.zone, now) + ', ' + zoneOffset(p.zone, now) + '</div>' +
+        '<div class="awake-status">' + (st.awake ? '🕯️ Awake' : '🌙 Should be sleeping') + '</div>' +
+        '<div class="awake-when">' + (st.awake ? 'Signs off in ' : 'Back in ') + dur(st.until) + '</div>' +
+        '<div class="awake-win">Active ' + localWindow(p, now) + ' their time (' + utcLabel(st.s) + ' to ' + utcLabel(st.e) + ' UTC' + (p.basis === 'local' ? ' today' : '') + ')</div></div>';
+    } catch (err) {
+      return '<div class="awake-card"><div class="awake-name">' + esc(p.name) + '</div><div class="awake-sub">Time zone unavailable right now.</div></div>';
+    }
+  }
+  function covRow(p, now) {
+    var w = utcWindow(p, now), s = w.s, e = w.e, segs = s < e ? [[s, e]] : [[s, 1440], [0, e]], n = now.getUTCHours() * 60 + now.getUTCMinutes();
+    return '<div class="awake-cov-row"><span class="awake-cov-who">' + esc(p.name) + '</span><div class="awake-cov-bar">' +
+      segs.map(function (g) { return '<div class="awake-cov-seg" style="left:' + (g[0] / 14.4) + '%;width:' + ((g[1] - g[0]) / 14.4) + '%"></div>'; }).join('') +
+      '<div class="awake-cov-now" style="left:' + (n / 14.4) + '%"></div></div></div>';
+  }
+  function coverageGaps(now) {
+    var wins = AWAKE_CREW.map(function (p) { return utcWindow(p, now); }), gaps = [], start = null, m;
+    for (m = 0; m <= 1440; m++) {
+      var covered = m < 1440 && wins.some(function (w) { return inWindow(m, w.s, w.e); });
+      if (!covered && start === null && m < 1440) start = m;
+      if ((covered || m === 1440) && start !== null) { gaps.push(utcLabel(start) + ' to ' + utcLabel(m === 1440 ? 0 : m)); start = null; }
+    }
+    return gaps;
+  }
+  function awakeHtml(now) {
+    if (!AWAKE_CREW.length) return '';
+    var awake = AWAKE_CREW.filter(function (p) { return crewState(p, now).awake; }).length;
+    var gaps = coverageGaps(now);
+    var sum = awake === 0
+      ? 'Nobody is scheduled to be awake right now — a reply might take a little longer than usual.'
+      : awake + ' of ' + AWAKE_CREW.length + ' awake right now. ' + (gaps.length ? 'Nobody is scheduled between ' + gaps.join(', ') + ' UTC.' : 'Someone is scheduled to be awake at every hour of the day.');
+    var axis = [0, 6, 12, 18, 24].map(function (h) { return '<span style="left:' + (h / 24 * 100) + '%">' + pad2(h) + '</span>'; }).join('');
+    return '<div class="awake-grid">' + AWAKE_CREW.map(function (p) { return crewCard(p, now); }).join('') + '</div>' +
+      '<div class="awake-cov"><div class="awake-cov-title">Active windows across the day (UTC). The blue line is now.</div>' +
+      AWAKE_CREW.map(function (p) { return covRow(p, now); }).join('') +
+      '<div class="awake-cov-row"><span></span><div class="awake-cov-axis">' + axis + '</div></div>' +
+      '<p class="awake-cov-sum">' + sum + '</p></div>';
+  }
+
+  var awakeTimer = null;
+  function startAwakeWidget() {
+    if (awakeTimer) { clearInterval(awakeTimer); awakeTimer = null; }
+    var box = document.getElementById('awakeBox');
+    if (!box) return;
+    function paint() {
+      var b = document.getElementById('awakeBox');
+      if (!b) { clearInterval(awakeTimer); awakeTimer = null; return; }
+      b.innerHTML = awakeHtml(new Date());
+    }
+    paint();
+    awakeTimer = setInterval(paint, 15000);
+  }
+
+  _vhPageSwapHooks.push(startAwakeWidget);
+  startAwakeWidget(); // in case this is a direct load straight onto vh-connect.html
+})();

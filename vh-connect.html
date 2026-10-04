@@ -14,6 +14,31 @@
     .discord-hero h2 { font-family: var(--f-disp); font-size: 1.3rem; letter-spacing: 0.22em; color: var(--gold-lt); margin-bottom: 10px; text-transform: uppercase; }
     .discord-hero p { font-family: var(--f-it); font-style: italic; font-size: 1.08rem; color: var(--text-dim); line-height: 1.85; max-width: 500px; margin: 0 auto 22px; }
     .discord-hero p em { color: var(--teal-pale); }
+
+    /* ── WHO'S AWAKE ── (named awake-* rather than crew-* so it can't
+       collide with the Gilded Threads roster cards, which already use
+       .crew-grid/.crew-card for something else entirely) */
+    .awake-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .awake-card { background: var(--panel); border: 1px solid var(--panel-b); border-top: 2px solid rgba(120,100,190,.55); border-radius: 3px; padding: 16px 18px 18px; backdrop-filter: blur(10px); }
+    .awake-card.is-awake { border-top-color: var(--gold); box-shadow: 0 0 24px rgba(201,168,76,.08); }
+    .awake-name { font-family: var(--f-disp); font-size: .72rem; letter-spacing: .24em; text-transform: uppercase; color: var(--teal-pale); }
+    .awake-time { font-family: var(--f-disp); font-size: 2.2rem; letter-spacing: .08em; color: var(--text); margin: 6px 0 0; line-height: 1.15; }
+    .awake-sub { font-family: var(--f-it); font-style: italic; font-size: .95rem; color: var(--text-dim); }
+    .awake-status { margin-top: 10px; font-family: var(--f-disp); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: #b9a7e8; }
+    .awake-card.is-awake .awake-status { color: var(--gold-lt); }
+    .awake-when { font-family: var(--f-it); font-style: italic; font-size: .92rem; color: var(--text-dim); margin-top: 3px; }
+    .awake-win { font-size: .9rem; color: var(--text-dim); margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(26,122,138,.18); }
+    .awake-cov { margin-top: 16px; background: var(--panel); border: 1px solid var(--panel-b); border-radius: 3px; padding: 16px 18px 14px; backdrop-filter: blur(10px); }
+    .awake-cov-title { font-family: var(--f-disp); font-size: .62rem; letter-spacing: .24em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+    .awake-cov-row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: center; margin: 7px 0; }
+    .awake-cov-who { font-size: 1rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .awake-cov-bar { position: relative; height: 12px; background: rgba(26,122,138,.14); border-radius: 2px; }
+    .awake-cov-seg { position: absolute; top: 0; bottom: 0; background: linear-gradient(to right, rgba(201,168,76,.55), rgba(226,201,126,.8)); border-radius: 2px; }
+    .awake-cov-now { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--teal-pale); box-shadow: 0 0 8px rgba(58,181,197,.8); }
+    .awake-cov-axis { position: relative; height: 14px; font-family: var(--f-disp); font-size: .52rem; letter-spacing: .14em; color: var(--text-dim); }
+    .awake-cov-axis span { position: absolute; transform: translateX(-50%); }
+    .awake-cov-sum { font-family: var(--f-it); font-style: italic; color: var(--text-dim); margin-top: 10px; font-size: .98rem; }
+    @media (max-width: 640px) { .awake-cov-row { grid-template-columns: 70px 1fr; } }
     .server-map { display: flex; flex-direction: column; gap: 9px; }
     .cat-row { background: var(--panel); border: 1px solid var(--panel-b); border-left: 3px solid rgba(26,122,138,0.4); border-radius: 2px; overflow: hidden; backdrop-filter: blur(8px); }
     .cat-row.gold-cat { border-left-color: rgba(201,168,76,0.5); }
@@ -75,11 +100,17 @@
   </div>
 
 
+  <div class="s-label" style="margin-top:40px;">✦ Who's Awake</div>
+  <div class="vh-card gold-left" style="margin-bottom:22px;">
+    <p>The Anchorlights keep watch in shifts across the globe. Here's who's likely around right now.</p>
+    <div id="awakeBox" style="margin-top:14px;"></div>
+  </div>
+
   <div class="s-label" style="margin-top:40px;">✦ The Bots — The Haven's Helpers</div>
   <div class="vh-card gold-left" style="margin-bottom:22px;">
     <div class="bot-section">
       <div class="bot-portrait-frame">
-       <img src="velvetcup.png" alt="Velvetcup">
+        <div class="bot-portrait-placeholder"><span>🧵</span><p>[ Velvetcup's portrait ]</p></div>
       </div>
       <div>
         <h2>Meet Velvetcup 🧵</h2>
@@ -90,11 +121,11 @@
   <div class="vh-card gold-left" style="margin-bottom:22px;">
     <div class="bot-section">
       <div class="bot-portrait-frame">
-        <img src="tidecup.png" alt="Tidecup">
+        <div class="bot-portrait-placeholder"><span>🌊</span><p>[ Tidecup's portrait ]</p></div>
       </div>
       <div>
         <h2>Meet Tidecup 🌊</h2>
-        <p>Sibling bot to Velvetcup. Keeper of the Haven. Watcher of the shores. The cup that holds the sea. Born of deep water and velvet dark. TideCup tends the Haven so the Lightkeepers don't have to.</p>
+        <p>Sibling bot to Velvetcup. The brewer of the harbour's tides.</p>
       </div>
     </div>
   </div>
