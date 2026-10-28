@@ -542,7 +542,7 @@ document.addEventListener('click', (e) => {
 (function setupWhosAwake() {
   var AWAKE_CREW = [
     { id: 'tae', name: 'Tae', zone: 'Asia/Kuala_Lumpur', start: '02:00', end: '15:00' },
-    { id: 'volara', name: 'Volara', zone: 'America/Chicago', start: '16:00', end: '05:00' },
+    { id: 'otterly', name: 'Otterly Adorable', zone: 'America/Chicago', start: '16:00', end: '05:00' },
     { id: 'shaydee', name: 'Shaydee', zone: 'Europe/Berlin', start: '09:00', end: '00:00', basis: 'local' }
   ];
 
